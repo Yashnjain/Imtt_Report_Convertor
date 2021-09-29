@@ -46,12 +46,20 @@ def pdf_page_breaker(email_date):
             if "shipping report" in f.lower():
                 df = read_pdf(temp_download + '\\' + f, pages = 'all', guess = False, stream = True ,
                             pandas_options={'header':None}, area = ["150,50,566,750"], columns = ["90,140,238,270,330,365,367,417,450,480,520,583,640,740"])
+                
                 main_df = pd.concat(df[:-1], ignore_index=True)
                 
-                m_df = main_df[[2,3,10]]
+                    
+
+                
+                m_df = main_df[[2,3,10,7]]
                 m_df.dropna(inplace=True)
                 m_df.reset_index(drop=True, inplace=True)
-                m_df.drop(m_df.tail(1).index,inplace=True)
+                try:
+                    if m_df[3].tail(1).str.contains("TOTA").bool():
+                        m_df.drop(m_df.tail(1).index,inplace=True) # remove total
+                except:
+                    pass
                 for i in range(len(m_df)):
                     
                     if i%2==0 or i == 0:
@@ -60,9 +68,10 @@ def pdf_page_breaker(email_date):
                         
                     else:
                         print("odd ",i)
+                        m_df[7][i] = m_df[7][i-1]
                         m_df[3][i] = m_df[2][i]
                         m_df[2][i] = m_df[2][i-1]   
-                m_df.columns = ["CUSTOMER NAME", "DESTINATION", "NET GALLONS"]
+                m_df.columns = ["CUSTOMER NAME", "DESTINATION", "NET GALLONS", "DATE"]
                 m_df.to_excel(file_loc+"\\imtt"+email_date+".xlsx", sheet_name = email_date,index=False)
 
                 email_df.append(file_loc+"\\imtt"+email_date+".xlsx")
@@ -71,7 +80,7 @@ def pdf_page_breaker(email_date):
                 os.remove(temp_download + '\\' + f)
         return email_df
     except Exception as e:
-        logging.info("Exception caught in pdf_page_breaker")
+        logging.info(f"Exception caught in pdf_page_breaker {e}")
         raise e
 
 def unzip_downloaded_files(download_path:str):
@@ -103,7 +112,7 @@ def download_wait(directory, nfiles = None):
     dl_wait = True
     while dl_wait and seconds < 90:
         time.sleep(1)
-        dl_wait = False
+       
         files = os.listdir(directory)
         if nfiles and len(files) != nfiles:
             dl_wait = True
@@ -116,6 +125,8 @@ def download_wait(directory, nfiles = None):
                 dl_wait = True
             elif fname.endswith('.part'):
                 dl_wait = True
+            else:
+                dl_wait = False
 
         seconds += 1
     return seconds
@@ -208,7 +219,7 @@ def login_and_download(browser, download_path):
             #     WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[10]/div/div/div/div/div/div/ul/li[3]/button/div/span"))).click()
             
         download_time = download_wait(download_path)
-        logging.info("download_time")
+        logging.info(f"download_time is {download_time}")
         time.sleep(10)
         # logout --
         logging.info('OPEN MAIN LINK')
@@ -231,7 +242,7 @@ def login_and_download(browser, download_path):
 
 def main():
     ############Uncomment for test ###############
-    # email_date = "09-24-2021"
+    # email_date = "09-27-2021"
     # pdf_page_breaker(email_date)
     ##############################################
     browser = None
@@ -309,6 +320,7 @@ def main():
             raise Exception("download failed, aborting process...")
     except Exception as e:
         # if 'Tried to run command without establishing a connection' not in str(e):
+        logging.exception(e)
         logging.info('send failure mail')
         logging.info(f'In exception and browser not none: {browser is not None}')
         print(e)
