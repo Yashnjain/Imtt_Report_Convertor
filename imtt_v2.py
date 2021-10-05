@@ -82,10 +82,17 @@ def pdf_page_breaker(today_date):
 
 def main():
     ############Uncomment for test ###############
-    email_date = "10-04-2021"
-    pdf_page_breaker(email_date)
+    # email_date = "10-04-2021"
+    # pdf_page_breaker(email_date)
     ##############################################
-
+    email_df = pdf_page_breaker(today_date)
+    if len(email_df)>0:
+                logging.info("Sending mail now")
+                send_mail(email_df, subject='JOB SUCCESS - {} {}'.format(job_name, today_date), body='{} completed successfully, Attached invoice file'.format(job_name), to_mail_list=to_mail_list)
+            
+    else:
+        logging.info('send success e-mail')
+        bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB SUCCESS - {} No file found'.format(job_name),mail_body = '{} completed successfully, Attached logs'.format(job_name),attachment_location = logfile)
 
 
 
@@ -96,7 +103,7 @@ if __name__ == "__main__":
     time_start = time.time()
     logging.warning('Start work at {} ...'.format(time_start))
     log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
-    # bu_alerts.bulog(process_name="RISK:BNP_PDF", database='POWERDB',status='Started',table_name = '', row_count=0, log=log_json, warehouse='',process_owner='MANISH')
+    
     main()
     time_end = time.time()
     logging.warning('It took {} seconds to run.'.format(time_end - time_start))
