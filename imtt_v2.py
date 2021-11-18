@@ -1,5 +1,5 @@
 from bu_alerts import send_mail
-from datetime import datetime
+from datetime import datetime, timedelta
 from datetime import date
 import numpy as np
 import pandas as pd
@@ -19,12 +19,13 @@ to_mail_list = ["imam.khan@biourja.com", "devina.ligga@biourja.com", "arvind.pat
 
 
 job_id=np.random.randint(1000000,9999999)
-today_date = date.today().strftime("%m-%d-%Y")
+today_date = (date.today()-timedelta(days=0)).strftime("%m-%d-%Y") #Change 1 to 0 for regular run
+# today_date = "11-16-2021"
 file_loc = os.getcwd()+f"\\data"
 job_name = "IMTT_REPORT_CONVERTER V2"
 # log progress --
 # logfile = 'C:\\AJ\\PowerSignals\\paper_position_report_bnp\\bnp_pdf_Logfile.txt'
-logfile = os.getcwd()+'\\'+str("itt_Logfile.txt")+'.txt'
+logfile = os.getcwd()+'\\logs\\'+str("imtt_v2_Logfile.txt")+'.txt'
 
 logging.basicConfig(
     level=logging.INFO, 
@@ -56,8 +57,12 @@ def pdf_page_breaker(today_date):
             
             if i%2==0 or i == 0:
                 print("even ",i)
-                m_df[9][i] = m_df[9][i] + m_df[9][i+1]
-                m_df[10][i] = m_df[10][i] + m_df[10][i+1]
+                try:
+                    m_df[9][i] = int(m_df[9][i]) + int(m_df[9][i+1])
+                    m_df[10][i] = int(m_df[10][i]) + int(m_df[10][i+1])
+                except:
+                    m_df[9][i] = int(m_df[9][i]) # Add nothing
+                    m_df[10][i] = int(m_df[10][i])
             else:
                 m_df.drop(i, inplace=True)
         
@@ -69,10 +74,11 @@ def pdf_page_breaker(today_date):
         m_df.insert(2, column="File Name", value=" ")
         m_df.insert(9, column="Gross Gallon 2", value=" ")
         m_df["Origin"] = "Montgomery-AL"
+        m_df['BOL Date'] = pd.to_datetime(m_df['BOL Date'], format='%m/%d/%y').dt.strftime('%m-%d-%Y')
         # m_df.columns = ["Department", "Document Type", "File Name", "BOL", "BOL Date", "Carrier Name","Customer", "Destination", "Gross Gallon", "Gross Gallon 2", "Net Gallon", "Origin"]
-        m_df.to_excel(file_loc+"\\imttv2"+today_date+".xlsx", sheet_name = today_date,index=False)
+        m_df.to_excel(file_loc+"\\imtt_v2_"+today_date+".xlsx", sheet_name = today_date,index=False)
 
-        email_df.append(file_loc+"\\imttv2"+today_date+".xlsx")
+        email_df.append(file_loc+"\\imtt_v2_"+today_date+".xlsx")
         
             
         return email_df
@@ -81,19 +87,23 @@ def pdf_page_breaker(today_date):
         raise e
 
 def main():
+    try:
     ############Uncomment for test ###############
-    # email_date = "10-04-2021"
-    # pdf_page_breaker(email_date)
-    ##############################################
-    email_df = pdf_page_breaker(today_date)
-    if len(email_df)>0:
-                logging.info("Sending mail now")
-                send_mail(email_df, subject='JOB SUCCESS - {} {}'.format(job_name, today_date), body='{} completed successfully, Attached invoice file'.format(job_name), to_mail_list=to_mail_list)
-            
-    else:
-        logging.info('send success e-mail')
-        bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB SUCCESS - {} No file found'.format(job_name),mail_body = '{} completed successfully, Attached logs'.format(job_name),attachment_location = logfile)
-
+        # email_date = "10-08-2021"
+        # email_df = pdf_page_breaker(email_date)
+        ##############################################
+        email_df = pdf_page_breaker(today_date)
+        if len(email_df)>0:
+            logging.info("Sending mail now")
+            send_mail(email_df, subject='JOB SUCCESS - {} {}'.format(job_name, today_date), body='{} completed successfully, Attached invoice file'.format(job_name), to_mail_list=to_mail_list)
+                
+        else:
+            logging.info('send success e-mail')
+            bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB SUCCESS - {} No file found'.format(job_name),mail_body = '{} completed successfully, Attached logs'.format(job_name),attachment_location = logfile)
+    except Exception as e:
+        logging.exception(e)
+        logging.info("Sending mail now")
+        bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB FAILED - {}'.format(job_name),mail_body = '{} failed, Attached logs'.format(job_name),attachment_location = logfile)
 
 
 

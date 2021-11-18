@@ -22,17 +22,16 @@ temp_download = os.getcwd()+"\\temp_download"
 receiver_email = 'imam.khan@biourja.com, devina.ligga@biourja.com'
 to_mail_list = ["imam.khan@biourja.com", "devina.ligga@biourja.com", "jacob.palacios@biourja.com", "operations@biourja.com"]
 
-headers = {
-    "User-Agent": 'Mozilla/5.0 (Windows NT 4.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36'}
+
 options = Options()
 options.add_argument('--headless')
-
+today = date.today()
 job_id=np.random.randint(1000000,9999999)
 file_loc = os.getcwd()+"\\data"
 job_name = "IMTT_REPORT_CONVERTER"
 # log progress --
 # logfile = 'C:\\AJ\\PowerSignals\\paper_position_report_bnp\\bnp_pdf_Logfile.txt'
-logfile = os.getcwd()+'\\'+str("itt_Logfile.txt")+'.txt'
+logfile = os.getcwd()+'\\logs\\'+str(today)+str("imtt_Logfile.txt")+'.txt'
 
 logging.basicConfig(
     level=logging.INFO, 
@@ -43,7 +42,8 @@ def pdf_page_breaker(email_date):
     try:
         email_df = []
         for f in os.listdir(temp_download):
-            if "shipping report" in f.lower():
+            logging.info(f"current checking {f}")
+            if "shipping report" in f.lower() or "shipping.pdf" in f.lower() or "shipping repots" in f.lower():
                 df = read_pdf(temp_download + '\\' + f, pages = 'all', guess = False, stream = True ,
                             pandas_options={'header':None}, area = ["150,50,566,750"], columns = ["90,140,238,270,330,365,367,417,450,480,520,583,640,740"])
                 
@@ -61,7 +61,10 @@ def pdf_page_breaker(email_date):
                 except:
                     pass
                 for i in range(len(m_df)):
-                    
+                    try:
+                        m_df[10][i] = int(m_df[10][i])
+                    except:
+                        m_df[10][i] = 0
                     if i%2==0 or i == 0:
                         print("even ",i)
                         m_df[3][i] = m_df[2][i+1]
@@ -77,6 +80,7 @@ def pdf_page_breaker(email_date):
                 email_df.append(file_loc+"\\imtt"+email_date+".xlsx")
                 shutil.move(temp_download + '\\' +f, file_loc+"\\imtt"+email_date+".pdf")
             else:
+                logging.info(f"removing {f}")
                 os.remove(temp_download + '\\' + f)
         return email_df
     except Exception as e:
@@ -103,7 +107,7 @@ def unzip_downloaded_files(download_path:str):
                     pass
                 #delete the folder after this
                 if os.path.exists(download_path+file_name) and '.zip' in file_name:
-                    os.remove(download_path+file_name)             
+                    os.remove(download_path+file_name)         
         else:
             print('No files avialble')
 
@@ -116,7 +120,8 @@ def download_wait(directory, nfiles = None):
         files = os.listdir(directory)
         if nfiles and len(files) != nfiles:
             dl_wait = True
-
+        if len(files)==1:
+            dl_wait = False
         for fname in files:
             print(fname)
             if fname.endswith('.crdownload'):
@@ -125,8 +130,8 @@ def download_wait(directory, nfiles = None):
                 dl_wait = True
             elif fname.endswith('.part'):
                 dl_wait = True
-            else:
-                dl_wait = False
+            
+                
 
         seconds += 1
     return seconds
@@ -158,9 +163,16 @@ def get_email_date(browser):
         # browser.find_element_by_xpath("/html/body/div[2]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[1]/div[2]/div/div/div/div/div[1]/button").click()
         time.sleep(10)
         #Selects first mail from all results
-        
-        download_xpath = '/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[1]/div[2]/div/div/div/div/div/div[6]/div/div'
-        WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,download_xpath))).click()
+        # download_xpath = '/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[1]/div[2]/div/div/div/div/div/div[7]/div/div' #select 2nd mail instead of 1st
+        try:
+            download_xpath = '/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[1]/div[2]/div/div/div/div/div/div[6]/div/div'
+            WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,download_xpath))).click()
+        except:
+            try:
+                download_xpath = '/html/body/div[2]/div/div[2]/div[2]/div[2]/div/div/div/div[2]/div/div[1]/div[2]/div/div/div/div/div/div[6]/div/div'
+                WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,download_xpath))).click()
+            except Exception as e:
+                raise e
         time.sleep(4)
         # logging.info("getting file date")
         # try:
@@ -204,19 +216,24 @@ def get_email_date(browser):
 def login_and_download(browser, download_path):
     result = False
     try:
-        # click on show all 3 attachements
-        # /html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div/div/div[2]/div/span/span[1]/button/span/span/span
+        # # click on show all 3 attachements
+        # WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div/div/div[2]/div/span/button[1]/span/i"))).click()
+        # #click on down arrow to expand shipping report options
+        # WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div/div/div[2]/div/div/div[2]/div/div/div/div[3]/button/span/i"))).click()
+        # #click on doenload
+        # WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[10]/div/div/div/div/div/div/ul/li[3]/button/div/span"))).click()
         try:
-            WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div[1]/div/div[2]/div/span/button/span/span"))).click()
-            
-                                                                                                     
+            WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div/div/div[2]/div/span/button[2]/span/span/span"))).click()
         except:
-            # try:
-            WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/span/button"))).click()
-            # except:
-            #     WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div[1]/div/div[2]/div/div/div/div/div/div[3]/button/span/i"))).click()
-            #     time.sleep(5)
-            #     WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[10]/div/div/div/div/div/div/ul/li[3]/button/div/span"))).click()
+            try:
+                WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div[1]/div/div[2]/div/span/button/span/span"))).click()
+                                                                                                                
+            except:
+                try:
+                    WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/span/button"))).click()
+                except:
+                    WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div[1]/div/div[2]/div/div/div/div/div/div[3]/button/span/i"))).click()
+                
             
         download_time = download_wait(download_path)
         logging.info(f"download_time is {download_time}")
@@ -233,105 +250,144 @@ def login_and_download(browser, download_path):
         print(e)
         logging.info(str(e))
         if browser is not None:
-            browser.close()
+            logging.info("quitting browser")
+            browser.quit()
         raise e
     finally:
         if browser is not None:
-            browser.close()
+            logging.info("quitting browser")
+            browser.quit()
         return result
 
 def main():
     ############Uncomment for test ###############
-    # email_date = "09-27-2021"
-    # pdf_page_breaker(email_date)
+    # email_date = "11-16-2021"
+    # email_df = pdf_page_breaker(email_date)
+    # browser = None
+    # try:
     ##############################################
-    browser = None
+    # 
     # remove files present in temp folder before starting main process
-    try:
-        for f in os.listdir(temp_download):
-            os.remove(os.path.join(temp_download, f))
-    except:
-        pass
-    try:
-        #getting the current email date to set download folder
-        logging.info('get the folder name as email date')
-        mime_types=['application/pdf'
-                        ,'text/plain',
-                        'application/vnd.ms-excel',
-                        'test/csv',
-                        'application/zip',
-                        'application/csv',
-                        'text/comma-separated-values','application/download','application/octet-stream'
-                        ,'binary/octet-stream'
-                        ,'application/binary'
-                        ,'application/x-unknown']
-                        
-        # path=os.getcwd()+'\\'
-        # download_path = path
-        profile = webdriver.FirefoxProfile()
-        profile.set_preference('browser.download.folderList', 2)
-        profile.set_preference('browser.download.manager.showWhenStarting', False)
-        profile.set_preference('browser.download.dir', temp_download)
-        profile.set_preference('pdfjs.disabled', True)
-        profile.set_preference('browser.helperApps.neverAsk.saveToDisk', ','.join(mime_types))
-        profile.set_preference('browser.helperApps.neverAsk.openFile',','.join(mime_types))
-        # browser = webdriver.Firefox(executable_path='C:\\AJ\\PowerSignals\\paper_position_report_bnp\\geckodriver.exe', firefox_profile=profile)
-        browser = webdriver.Firefox(executable_path=os.getcwd()+'\\geckodriver.exe', firefox_profile=profile)
-        #getting the current email date to set download folder
-        email_date = get_email_date(browser)
-        
-        logging.info(f'Email date is {email_date}')
-        print(f"Email reception date is {email_date}")
-        
-        date_today = str(datetime.today().strftime("%m%d%Y"))
-        print(f"Today\'s date is {date_today}")
-        logging.info(f'Today date is {date_today}')
-       
-        logging.info(f"Email reception date is {email_date}")
-        
-        print(temp_download)
-        
-        logging.info('login and download the zip file')
-        status = login_and_download(browser, temp_download)
-        if status:
-            logging.info("download successful")
-            logging.info('unzip downloaded file')
-            unzip_downloaded_files(temp_download+"\\")
-            logging.info("delete duplicate files")
-            email_df = pdf_page_breaker(email_date)
-            if len(email_df)>0:
-                logging.info("Sending mail now")
-                send_mail(email_df, subject='JOB SUCCESS - {} {}'.format(job_name, email_date), body='{} completed successfully, Attached invoice file'.format(job_name), to_mail_list=to_mail_list)
+    retry = 0
+    while retry < 2:
+        try:
+            if retry > 0:
+                logging.info("Retrying code now")
+    
+            for f in os.listdir(temp_download):
+                os.remove(os.path.join(temp_download, f))
+        except:
+            pass
+        try:
+            browser = None
+            check = False
+            # raise Exception("test")
+            #getting the current email date to set download folder
+            logging.info('get the folder name as email date')
+            mime_types=['application/pdf'
+                            ,'text/plain',
+                            'application/vnd.ms-excel',
+                            'test/csv',
+                            'application/zip',
+                            'application/csv',
+                            'text/comma-separated-values','application/download','application/octet-stream'
+                            ,'binary/octet-stream'
+                            ,'application/binary'
+                            ,'application/x-unknown']
+                            
+            # path=os.getcwd()+'\\'
+            # download_path = path
+            profile = webdriver.FirefoxProfile()
+            profile.set_preference('browser.download.folderList', 2)
+            profile.set_preference('browser.download.manager.showWhenStarting', False)
+            profile.set_preference('browser.download.dir', temp_download)
+            profile.set_preference('pdfjs.disabled', True)
+            profile.set_preference('browser.helperApps.neverAsk.saveToDisk', ','.join(mime_types))
+            profile.set_preference('browser.helperApps.neverAsk.openFile',','.join(mime_types))
+            # browser = webdriver.Firefox(executable_path='C:\\AJ\\PowerSignals\\paper_position_report_bnp\\geckodriver.exe', firefox_profile=profile)
+            browser = webdriver.Firefox(executable_path=os.getcwd()+'\\geckodriver.exe', firefox_profile=profile)
+            #getting the current email date to set download folder
+            email_date = get_email_date(browser)
             
-            else:
-                logging.info('send success e-mail')
-                log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
-                bu_alerts.bulog(process_name="RISK:BNP_PDF", database='POWERDB',status='Completed',table_name = '', row_count=0, log=log_json, warehouse='',process_owner='MANISH')
-                bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB SUCCESS - {} No file found'.format(job_name),mail_body = '{} completed successfully, Attached logs'.format(job_name),attachment_location = logfile)
+            logging.info(f'Email date is {email_date}')
+            print(f"Email reception date is {email_date}")
+            
+            date_today = str(datetime.today().strftime("%m-%d-%Y"))
+            print(f"Today\'s date is {date_today}")
+            logging.info(f'Today date is {date_today}')
+            check = False
+            logging.info(f"Email reception date is {email_date}")
+            # ##################For retrial################################
+            if date_today != email_date:
+                check = True
+                raise Exception("File not received till now")
+                # logging.info("sending file not received failure mail")
+                # bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB FAILED - {} TILL NOW FILE NOT RECEIVED'.format(job_name),mail_body = '{} failed, Attached logs'.format(job_name),attachment_location = logfile)
+                # sys.exit(-1)
+                
+                
+            # ########################################################
+            print(temp_download)
+            
+            logging.info('login and download the zip file')
+            status = login_and_download(browser, temp_download)
+            if status:
+                logging.info("download successful")
+                logging.info('unzip downloaded file')
+                unzip_downloaded_files(temp_download+"\\")
+                logging.info("delete duplicate files")
+                email_df = pdf_page_breaker(email_date)
+        ##################################################################
+                logging.info(f"currently email_df contains: {email_df}")
+                if len(email_df)>0:
+                    logging.info("Sending mail now")
+                    send_mail(email_df, subject='JOB SUCCESS - {} {}'.format(job_name, email_date), body='{} completed successfully, Attached invoice file'.format(job_name), to_mail_list=to_mail_list)
+                    
+                else:
+                    logging.info('send success e-mail')
+                    log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
+                    
+                    bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB SUCCESS - {} No file found'.format(job_name),mail_body = '{} completed successfully, Attached logs'.format(job_name),attachment_location = logfile)
+                    
 
-            # else:
-            #     logging.info("Files not match")
-            #     raise Exception("Files not match")
-            # else:
-        #         logging.info("Bno folder not found")
-        #         # raise Exception
-        else:
-            logging.info("download failed, aborting process...")
-            raise Exception("download failed, aborting process...")
-    except Exception as e:
-        # if 'Tried to run command without establishing a connection' not in str(e):
-        logging.exception(e)
-        logging.info('send failure mail')
-        logging.info(f'In exception and browser not none: {browser is not None}')
-        print(e)
-        # if browser is not None:
-        #     browser.close()
-        logging.info(str(e))
-        log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
-        # bu_alerts.bulog(process_name="RISK:BNP_PDF", database='POWERDB',status='Failed',table_name = '', row_count=0, log=log_json, warehouse='',process_owner='IMAM')
-        bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB FAILED - {}'.format(job_name),mail_body = '{} failed, Attached logs'.format(job_name),
-        attachment_location = logfile)
-        sys.exit(-1)
+                
+            ###########################################################
+            else:
+                logging.info("download failed, aborting process...")
+            #     raise Exception("download failed, aborting process...")
+            ###########################################################
+            break
+        except Exception as e:
+            # if 'Tried to run command without establishing a connection' not in str(e):
+            logging.exception(e)
+            logging.info('send failure mail')
+            
+            print(e)
+            
+            logging.info(str(e))
+            try:
+                if browser is not None:
+                    logging.info("quitting browser")
+                    browser.quit()
+                    browser = None
+            except Exception as e:
+                print(e)
+                logging.exception(e)
+                pass
+            logging.info("retry again")
+            retry +=1 
+            if retry != 2:
+                time.sleep(60)
+            if retry == 2:
+                log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
+                if check:
+                    logging.info("sending file not received failure mail")
+                    bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB FAILED - {} TILL NOW FILE NOT RECEIVED'.format(job_name),mail_body = '{} failed, Attached logs'.format(job_name),attachment_location = logfile)
+                else:
+                    bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB FAILED - {}'.format(job_name),mail_body = '{} failed, Attached logs'.format(job_name),
+                attachment_location = logfile)
+                
+                sys.exit(-1)
 
 if __name__ == "__main__":
     logging.info('Execution Started')
@@ -339,8 +395,9 @@ if __name__ == "__main__":
     time_start = time.time()
     logging.warning('Start work at {} ...'.format(time_start))
     log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
-    # bu_alerts.bulog(process_name="RISK:BNP_PDF", database='POWERDB',status='Started',table_name = '', row_count=0, log=log_json, warehouse='',process_owner='MANISH')
+    
     main()
+    
     time_end = time.time()
     logging.warning('It took {} seconds to run.'.format(time_end - time_start))
     print('It took {} seconds to run.'.format(time_end - time_start))
