@@ -254,28 +254,31 @@ def login_and_download(browser, download_path, x_path_i):
         # WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div/div/div[2]/div/div/div[2]/div/div/div/div[3]/button/span/i"))).click()
         # #click on doenload
         # WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[10]/div/div/div/div/div/div/ul/li[3]/button/div/span"))).click()
-        try:
-            WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div/div/div[2]/div/span/button[2]/span/span/span"))).click()
+        try:                                                                                          
+            WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"button.ms-Button--action:nth-child(3)"))).click()
         except:
-            try:                                                                                
-                WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div[1]/div/div[2]/div/span/button/span/span"))).click()
-                                                                                                                
+            try:
+                WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div/div/div[2]/div/span/button[2]/span/span/span"))).click()
             except:
-                try:
-                    WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/span/button"))).click()
+                try:                                                                                
+                    WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div[1]/div/div[2]/div/span/button/span/span"))).click()
+                                                                                                                    
                 except:
                     try:
-                        WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div[1]/div/div[2]/div/div/div/div/div/div[3]/button/span/i"))).click()
+                        WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/span/button"))).click()
                     except:
                         try:
-                            logging.info("downloading single available file")
-                            WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div/div/div[2]/div/div/div/div/div/div/div[3]/button/span/i"))).click()
-                            time.sleep(5)                                                                             
-                            WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i+8}]/div/div/div/div/div/div/ul/li[3]/button/div/span"))).click()
-                                                                                                                    
-                            not_zip = True
-                        except Exception as e:
-                            raise e
+                            WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div[1]/div/div[2]/div/div/div/div/div/div[3]/button/span/i"))).click()
+                        except:
+                            try:
+                                logging.info("downloading single available file")
+                                WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div/div/div[2]/div/div/div/div/div/div/div[3]/button/span/i"))).click()
+                                time.sleep(5)                                                                             
+                                WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i+8}]/div/div/div/div/div/div/ul/li[3]/button/div/span"))).click()
+                                                                                                                        
+                                not_zip = True
+                            except Exception as e:
+                                raise e
                 
             
         download_time = download_wait(download_path)
@@ -379,7 +382,14 @@ def main():
                     if date_today != email_date:
                         raise Exception("File not received till now")
                     else:
-                        logging.info("File for today alreay downloaded")
+                        logging.info("File for today already downloaded")
+                        try:
+                            if browser is not None:
+                                browser.quit()
+                                browser = None
+                        except Exception as e:
+                            print(e)
+                            logging.exception(e)
                         sys.exit(0)
                     # logging.info("sending file not received failure mail")
                     # bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB FAILED - {} TILL NOW FILE NOT RECEIVED'.format(job_name),mail_body = '{} failed, Attached logs'.format(job_name),attachment_location = logfile)
