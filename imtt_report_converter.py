@@ -15,6 +15,9 @@ import bu_alerts
 from zipfile import ZipFile
 from tabula import read_pdf
 import shutil
+import pytz
+
+
 from common import send_email_with_attachment as send_mail
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
@@ -23,7 +26,7 @@ temp_download = os.getcwd()+"\\temp_download"
 receiver_email = 'imam.khan@biourja.com, devina.ligga@biourja.com'
 to_mail_list = ["imam.khan@biourja.com", "devina.ligga@biourja.com", "jacob.palacios@biourja.com", "operations@biourja.com"]
 
-
+IST = pytz.timezone('Asia/Kolkata')
 options = Options()
 options.add_argument('--headless')
 today = date.today()
@@ -369,7 +372,13 @@ def main():
                 logging.info(f'Email date is {email_date}')
                 print(f"Email reception date is {email_date}")
                 
-                date_today = str((datetime.today() - timedelta(days=0)).strftime("%m-%d-%Y")) #Change 1 to 0 for regular run
+                email_date = datetime.strptime(email_date, "%m-%d-%Y")
+                date_today = datetime.today() - timedelta(hours=12) #Change 1 to 0 for regular run
+                ist_today = date_today.astimezone(IST)
+                logging.info(f"current ist datetime is {ist_today}")
+                # ist_today = ist_today.date()
+                # logging.info(f"current ist date is {ist_today}")
+                # date_today = str((datetime.today() - timedelta(days=0)).strftime("%m-%d-%Y")) #Change 1 to 0 for regular run
                 print(f"Today\'s date is {date_today}")
                 logging.info(f'Today date is {date_today}')
                 check = False
@@ -379,7 +388,7 @@ def main():
                 # ##################For retrial################################
                 if email_date_time == prev_email and len(email_df)==0:
                     check = True
-                    if date_today != email_date:
+                    if ist_today.replace(tzinfo=None) > email_date:  #date_today != email_date: 12 hour old mail will be considered as no new mail recived for today 
                         raise Exception("File not received till now")
                     else:
                         logging.info("File for today already downloaded")
@@ -417,7 +426,7 @@ def main():
                 else:
                     break
                 i+=1
-            logging.info(f"saved atest mail datetime in file as {to_be_saved}")
+            logging.info(f"saved latest mail datetime in file as {to_be_saved}")
             write_file("imtt_prev", to_be_saved)
             logging.info(f"currently email_df contains: {email_df}")
             if len(email_df)>0:
