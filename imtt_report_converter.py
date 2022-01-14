@@ -388,7 +388,7 @@ def main():
                 # ##################For retrial################################
                 if email_date_time == prev_email and len(email_df)==0:
                     check = True
-                    if ist_today.replace(tzinfo=None) > email_date:  #date_today != email_date: 12 hour old mail will be considered as no new mail recived for today 
+                    if ist_today.replace(tzinfo=None) > email_date_time:  #date_today != email_date: 12 hour old mail will be considered as no new mail recived for today 
                         raise Exception("File not received till now")
                     else:
                         logging.info("File for today already downloaded")

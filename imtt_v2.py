@@ -82,6 +82,7 @@ def pdf_page_breaker():
             # file_date = m_df["DATE"][0]
             # file_date = file_date.replace("/", "-")
             file_name = file.split("\\")[-1].replace("imtt","")
+            file_name = file_name.replace(".pdf", "")
             m_df.to_excel(data_loc+"\\imtt_v2_"+file_name+".xlsx", sheet_name = today_date,index=False)
             file_name = file.split("\\")[-1].replace("imtt","")
             email_df.append(data_loc+"\\imtt_v2_"+file_name+".xlsx")
