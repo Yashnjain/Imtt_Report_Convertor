@@ -10,7 +10,7 @@ from email import encoders
 import os
 
 smtp_user_name = 'biourjapowerdata@biourja.com'
-smtp_password = r'bY3mLSQ-\Q!9QmXJ'
+smtp_password = "Texas08642" #r'bY3mLSQ-\Q!9QmXJ'
 
 def send_email_with_attachment(file_location:list, subject:str, body: str, to_mail_list:list):
     """
@@ -24,7 +24,9 @@ def send_email_with_attachment(file_location:list, subject:str, body: str, to_ma
         # Get file name from file locaiton
         # path, file_name = os.path.split(file_location)
         # Siging into  email 
-        smtp = smtplib.SMTP(host='us-smtp-outbound-1.mimecast.com', port=587)
+        # smtp = smtplib.SMTP(host='us-smtp-outbound-1.mimecast.com', port=587)
+        smtp = smtplib.SMTP('smtp.office365.com',
+                         587) # creates SMTP session
         smtp.starttls()
         smtp.login(smtp_user_name, smtp_password)
         # Define the mime part

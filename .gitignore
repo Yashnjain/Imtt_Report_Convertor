@@ -1,6 +1,7 @@
 # Temporary and binary files
 bulog.py
 .vscode
+*.pdf
 *~
 *.py[cod]
 *.so
@@ -70,3 +71,6 @@ spp_csv_download.py
 # Per-project virtualenvs
 .venv*/
 venv*/
+
+#geckodriverlogs
+geckodriver.log
