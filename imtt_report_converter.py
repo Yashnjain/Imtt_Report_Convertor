@@ -74,7 +74,8 @@ def pdf_page_breaker(email_date_time, email_df):
                 
                 # m_df = main_df[[2,3,10,7]]
                 m_df = main_df[[2,3,8,5]]
-                m_df.dropna(inplace=True)
+                m_df = m_df[m_df[3].notna()]
+                # m_df.dropna(inplace=True)
                 m_df.reset_index(drop=True, inplace=True)
                 try:
                     if m_df[3].tail(1).str.contains("TOTA").bool():
@@ -90,6 +91,7 @@ def pdf_page_breaker(email_date_time, email_df):
                         m_df[8][i] = 0
                     if i%2==0 or i == 0:
                         # print("even ",i)
+
                         m_df[3][i] = m_df[2][i+1]
                         
                     else:
@@ -243,13 +245,20 @@ def get_email_date(browser, i, x_path_i):
         # file_date = f_month + f_day + file_date[4:]
         logging.info('get email date and time')
         time.sleep(4)
+        
         try:#id__2056
-            temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".LySXSW2sVSEfTySFcRQJ")))
+            temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".LySXS")))#W2sVSEfTySFcRQJ
         except:
             try:
-                temp_dt = browser.find_element_by_class_name('DWrY3hKxZTZNTwt3mx095')
+                temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div/div[1]/div[3]/div[2]/div")))
             except:
-                temp_dt = browser.find_element_by_class_name('_24i22iNhbLz_Hc8BeXBUwc')
+                try:
+                    temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.XPATH,"/html/body/div[3]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div/div[1]/div[2]/div[1]/div[2]")))
+                except:
+                    try:
+                        temp_dt = browser.find_element_by_class_name('DWrY3hKxZTZNTwt3mx095')
+                    except:
+                        temp_dt = browser.find_element_by_class_name('_24i22iNhbLz_Hc8BeXBUwc')
         time.sleep(4)
         lst_date = temp_dt.text.split()[1].split('/')
         if len(lst_date[0])==1:
@@ -303,17 +312,33 @@ def login_and_download(browser, download_path, x_path_i):
                                 try:
                                     logging.info("downloading single available file")
                                     try:
-                                        WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,".O8UyuYP6NyglKspIRINh"))).click()
+                                        WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,".O8Uyu"))).click()
                                     except:
-                                        WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div/div[3]/button/span/i"))).click()
+                                        try:
+                                            WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,".O8UyuYP6NyglKspIRINh"))).click()
+                                        except:
+                                            WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div/div[3]/button/span/i"))).click()
                                     
                                     time.sleep(5)
-                                    WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"li.ms-ContextualMenu-item:nth-child(3) > button:nth-child(1)"))).click()
-                                    # WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i+8}]/div/div/div/div/div/div/ul/li[3]/button/div/span"))).click()
-                                    not_zip = True
+                                    try:
+                                        WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.NAME,"/html/body/div[3]/div[4]/div/div/div/div/div/div/ul/li[3]/button"))).click()
+                                        
+                                    except:
+                                        try:
+                                            WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.NAME,"Download"))).click()
+                                            
+                                        except:
+                                            try:
+                                                WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"li.ms-ContextualMenu-item:nth-child(3) > button:nth-child(1)"))).click()
+                                                
+                                            except Exception as e:
+                                                raise e
+                                        
+                                                # WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i+8}]/div/div/div/div/div/div/ul/li[3]/button/div/span"))).click()
+                                    not_zip = True           
                                 except Exception as e:
                                     raise e
-                    
+
             
         download_time = download_wait(download_path)
         logging.info(f"download_time is {download_time}")
@@ -342,7 +367,7 @@ def login_and_download(browser, download_path, x_path_i):
 def main():
     ############Uncomment for test ###############
     # email_df = []
-    # email_date = "04-04-2022"
+    # email_date = "05-09-2022"
     # email_df = pdf_page_breaker(email_date,email_df)
     # browser = None
     # check = False
@@ -398,6 +423,9 @@ def main():
                 except:
                     pass
                 email_date, email_date2, x_path_i = get_email_date(browser, i, x_path_i)
+                if email_date2 == "5/24/2022 9:02 PM":
+                    i+=1
+                    continue
                 email_date_time = datetime.strptime(email_date2, "%m/%d/%Y %I:%M %p")
                 if to_be_saved is None:
                     to_be_saved = email_date2
@@ -444,6 +472,7 @@ def main():
                     logging.info('login and download the zip file')
                     status, x_path_i, not_zip = login_and_download(browser, temp_download, x_path_i)
                     if status:
+                        subject_datetime = email_date_time
                         logging.info("download successful")
                         logging.info('unzip downloaded file')
                         if not not_zip:
@@ -464,7 +493,7 @@ def main():
             logging.info(f"currently email_df contains: {email_df}")
             if len(email_df)>0:
                 logging.info("Sending mail now")
-                send_mail(email_df, subject='JOB SUCCESS - {} {}'.format(job_name, email_date), body='{} completed successfully, Attached invoice file'.format(job_name), to_mail_list=to_mail_list)
+                send_mail(email_df, subject='JOB SUCCESS - {} {}'.format(job_name, subject_datetime), body='{} completed successfully, Attached invoice file'.format(job_name), to_mail_list=to_mail_list)
                 
             else:
                 logging.info('send success e-mail')

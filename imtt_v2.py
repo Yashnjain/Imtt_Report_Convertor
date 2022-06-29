@@ -66,8 +66,9 @@ def pdf_page_breaker():
 
             # m_df = main_df[[5,7,3,2,1,9,10]]
             m_df = main_df[[4,5,3,2,1,7,8]]
+            m_df = m_df[m_df[3].notna()]
             # m_df = main_df[[2,3,10,7]]
-            m_df.dropna(inplace=True)
+            # m_df.dropna(inplace=True)
             m_df.reset_index(drop=True, inplace=True)
             try:
                 if m_df[3].tail(1).str.contains("TOTA").bool():
