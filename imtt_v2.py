@@ -13,8 +13,8 @@ for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
 
 temp_download = os.getcwd()+"\\temp_download"
-receiver_email = 'imam.khan@biourja.com,mrutunjaya.sahoo@biourja.com, devina.ligga@biourja.com'
-to_mail_list = ["imam.khan@biourja.com","mrutunjaya.sahoo@biourja.com", "devina.ligga@biourja.com", "arvind.patidar@biourja.com", "rini.gohil@biourja.com", "amit.bhonsle@biourja.com"]
+receiver_email = 'imam.khan@biourja.com,mrutunjaya.sahoo@biourja.com, devina.ligga@biourja.com, arvind.patidar@biourja.com, rini.gohil@biourja.com, amit.bhonsle@biourja.com, priyanshi.jhawar@biourja.com, ayushi.joshi@biourja.com'
+to_mail_list = ["imam.khan@biourja.com","mrutunjaya.sahoo@biourja.com", "devina.ligga@biourja.com", "arvind.patidar@biourja.com", "rini.gohil@biourja.com", "amit.bhonsle@biourja.com", "priyanshi.jhawar@biourja.com", "ayushi.joshi@biourja.com"]
 
 
 
@@ -57,8 +57,10 @@ def pdf_page_breaker():
                 # df = read_pdf(file, pages = 'all', guess = False, stream = True ,
                 #             pandas_options={'header':None}, area = ["150,50,566,750"], columns = ["90,140,238,270,330,365,367,417,450,480,520,583,640,740"])
 
+            # df = read_pdf(file, pages = 'all', guess = False, stream = True ,
+            #             pandas_options={'header':None}, area = ["150,50,566,750"], columns = ["90,140,238,330,367,417,450,485,520,550,583,640,740"])
             df = read_pdf(file, pages = 'all', guess = False, stream = True ,
-                        pandas_options={'header':None}, area = ["150,50,566,750"], columns = ["90,140,238,330,367,417,450,485,520,550,583,640,740"])
+                        pandas_options={'header':None}, area = ["150,50,566,750"], columns = ["90,140,238,330,367,417,450,482,520,550,583,640,740"])
             
             main_df = pd.concat(df[:-1], ignore_index=True)
             

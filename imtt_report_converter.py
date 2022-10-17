@@ -23,8 +23,8 @@ for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
 
 temp_download = os.getcwd()+"\\temp_download"
-receiver_email = 'imam.khan@biourja.com, mrutunjaya.sahoo@biourja.com, devina.ligga@biourja.com'
-to_mail_list = ["imam.khan@biourja.com", "mrutunjaya.sahoo@biourja.com", "devina.ligga@biourja.com", "jacob.palacios@biourja.com", "operations@biourja.com"]
+receiver_email = 'imam.khan@biourja.com, mrutunjaya.sahoo@biourja.com, devina.ligga@biourja.com, priyanshi.jhawar@biourja.com, ayushi.joshi@biourja.com'
+to_mail_list = ["imam.khan@biourja.com", "mrutunjaya.sahoo@biourja.com", "devina.ligga@biourja.com", "priyanshi.jhawar@biourja.com", "ayushi.joshi@biourja.com","jacob.palacios@biourja.com", "operations@biourja.com"]
 
 IST = pytz.timezone('Asia/Kolkata')
 options = Options()
@@ -186,7 +186,11 @@ def get_email_date(browser, i, x_path_i):
             WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.ID, "idBtn_Back"))).click()
             logging.info('point cursor on search box')
             time.sleep(5)
-            
+            #Adding feeback back handler
+            try:
+                WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".ms-Dialog-button"))).click()
+            except:
+                pass
             WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.ID, "searchBoxId-Mail"))).click()
             time.sleep(5)
             WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.ID, "searchScopeWrapperId"))).click()#Select dropdown
@@ -195,11 +199,11 @@ def get_email_date(browser, i, x_path_i):
             time.sleep(1)
             logging.info('IMTT')
             try:
-                WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH, f"/html/body/div[{x_path_i}]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[1]/div[2]/div/div/div/div/div[1]/div/div[2]/div/input"))).send_keys("TT Montgomery Inv. & Lif")
+                WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH, f"/html/body/div[{x_path_i}]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[1]/div[2]/div/div/div/div/div[1]/div/div[2]/div/input"))).send_keys("IMTT Montgomery")#TT Montgomery Inv. & Lif
             except:
                 try:
                     x_path_i += 1
-                    WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH, f"/html/body/div[{x_path_i}]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[1]/div[2]/div/div/div/div/div[1]/div/div[2]/div/input"))).send_keys("TT Montgomery Inv. & Lif")
+                    WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH, f"/html/body/div[{x_path_i}]/div/div[1]/div/div[1]/div[2]/div/div/div/div/div[1]/div[2]/div/div/div/div/div[1]/div/div[2]/div/input"))).send_keys("IMTT Montgomery")#TT Montgomery Inv. & Lif
                 except Exception as e:
                     raise e
 
@@ -245,20 +249,23 @@ def get_email_date(browser, i, x_path_i):
         # file_date = f_month + f_day + file_date[4:]
         logging.info('get email date and time')
         time.sleep(4)
-        
-        try:#id__2056
-            temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".LySXS")))#W2sVSEfTySFcRQJ
+        try:
+            temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".LySXS.f3i4D.n5mNi.t9BBk")))
         except:
-            try:
-                temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div/div[1]/div[3]/div[2]/div")))
+            
+            try:#id__2056
+                temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".LySXS")))#W2sVSEfTySFcRQJ
             except:
                 try:
-                    temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.XPATH,"/html/body/div[3]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div/div[1]/div[2]/div[1]/div[2]")))
+                    temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div/div[1]/div[3]/div[2]/div")))
                 except:
                     try:
-                        temp_dt = browser.find_element_by_class_name('DWrY3hKxZTZNTwt3mx095')
+                        temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.XPATH,"/html/body/div[3]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div/div[1]/div[2]/div[1]/div[2]")))
                     except:
-                        temp_dt = browser.find_element_by_class_name('_24i22iNhbLz_Hc8BeXBUwc')
+                        try:
+                            temp_dt = browser.find_element_by_class_name('DWrY3hKxZTZNTwt3mx095')
+                        except:
+                            temp_dt = browser.find_element_by_class_name('_24i22iNhbLz_Hc8BeXBUwc')
         time.sleep(4)
         lst_date = temp_dt.text.split()[1].split('/')
         if len(lst_date[0])==1:
