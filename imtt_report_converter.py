@@ -61,7 +61,7 @@ def pdf_page_breaker(email_date_time, email_df):
         
         for f in os.listdir(temp_download):
             logging.info(f"current checking {f}")
-            if "shipping report" in f.lower() or "shipping.pdf" in f.lower() or "shipping repots" in f.lower():
+            if "shipping report" in f.lower() or "shipping.pdf" in f.lower() or "shipping repots" in f.lower() or "transaction reoprt" in f.lower():
                 # df = read_pdf(temp_download + '\\' + f, pages = 'all', guess = False, stream = True ,
                 #             pandas_options={'header':None}, area = ["150,50,566,750"], columns = ["90,140,238,270,330,365,367,417,450,480,520,583,640,740"])
                 df = read_pdf(temp_download + '\\' + f, pages = 'all', guess = False, stream = True ,
@@ -250,7 +250,9 @@ def get_email_date(browser, i, x_path_i):
         logging.info('get email date and time')
         time.sleep(4)
         try:
-            temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".LySXS.f3i4D.n5mNi.t9BBk")))
+            temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div[aria-label='Reading Pane'] div:nth-child(3) div:nth-child(2) div:nth-child(1)")))
+
+            # temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".LySXS.f3i4D.n5mNi.t9BBk")))
         except:
             
             try:#id__2056
@@ -263,9 +265,12 @@ def get_email_date(browser, i, x_path_i):
                         temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.XPATH,"/html/body/div[3]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div/div[1]/div[2]/div[1]/div[2]")))
                     except:
                         try:
-                            temp_dt = browser.find_element_by_class_name('DWrY3hKxZTZNTwt3mx095')
+                            temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR,".AL_OM.NAtc2.l8Tnu.I1wdR")))
                         except:
-                            temp_dt = browser.find_element_by_class_name('_24i22iNhbLz_Hc8BeXBUwc')
+                            try:
+                                temp_dt = browser.find_element_by_class_name('DWrY3hKxZTZNTwt3mx095')
+                            except:
+                                temp_dt = browser.find_element_by_class_name('_24i22iNhbLz_Hc8BeXBUwc')
         time.sleep(4)
         lst_date = temp_dt.text.split()[1].split('/')
         if len(lst_date[0])==1:

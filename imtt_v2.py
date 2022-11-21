@@ -13,8 +13,8 @@ for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
 
 temp_download = os.getcwd()+"\\temp_download"
-receiver_email = 'imam.khan@biourja.com,mrutunjaya.sahoo@biourja.com, devina.ligga@biourja.com, arvind.patidar@biourja.com, rini.gohil@biourja.com, amit.bhonsle@biourja.com, priyanshi.jhawar@biourja.com, ayushi.joshi@biourja.com'
-to_mail_list = ["imam.khan@biourja.com","mrutunjaya.sahoo@biourja.com", "devina.ligga@biourja.com", "arvind.patidar@biourja.com", "rini.gohil@biourja.com", "amit.bhonsle@biourja.com", "priyanshi.jhawar@biourja.com", "ayushi.joshi@biourja.com"]
+receiver_email = 'imam.khan@biourja.com,mrutunjaya.sahoo@biourja.com, devina.ligga@biourja.com, arvind.patidar@biourja.com, rini.gohil@biourja.com, amit.bhonsle@biourja.com, priyanshi.jhawar@biourja.com, ayushi.joshi@biourja.com, amit.sharma@biourja.com'
+to_mail_list = ["imam.khan@biourja.com","mrutunjaya.sahoo@biourja.com", "devina.ligga@biourja.com", "arvind.patidar@biourja.com", "rini.gohil@biourja.com", "amit.bhonsle@biourja.com", "priyanshi.jhawar@biourja.com", "ayushi.joshi@biourja.com", "amit.sharma@biourja.com"]
 
 
 
