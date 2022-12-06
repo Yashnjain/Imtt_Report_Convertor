@@ -250,27 +250,38 @@ def get_email_date(browser, i, x_path_i):
         logging.info('get email date and time')
         time.sleep(4)
         try:
-            temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div[aria-label='Reading Pane'] div:nth-child(3) div:nth-child(2) div:nth-child(1)")))
-
-            # temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".LySXS.f3i4D.n5mNi.t9BBk")))
+            temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR,".AL_OM")))
         except:
-            
-            try:#id__2056
-                temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".LySXS")))#W2sVSEfTySFcRQJ
+            try:
+                temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div[aria-label='Reading Pane'] div:nth-child(3) div:nth-child(2) div:nth-child(1)")))
             except:
                 try:
-                    temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div/div[1]/div[3]/div[2]/div")))
+                    temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, "body > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nthchild(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > div")))
+                
+                
+
+                    # temp_dt=WebDriverWait(browser, 60, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".LySXS.f3i4D.n5mNi.t9BBk")))
                 except:
-                    try:
-                        temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.XPATH,"/html/body/div[3]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div/div[1]/div[2]/div[1]/div[2]")))
+                    
+                    try:#id__2056
+                        temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".LySXS")))#W2sVSEfTySFcRQJ
                     except:
                         try:
-                            temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR,".AL_OM.NAtc2.l8Tnu.I1wdR")))
+                            temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div/div[1]/div[3]/div[2]/div")))
                         except:
                             try:
-                                temp_dt = browser.find_element_by_class_name('DWrY3hKxZTZNTwt3mx095')
+                                temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.XPATH,"/html/body/div[3]/div/div[2]/div[2]/div[2]/div/div/div/div[3]/div/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div/div[1]/div[2]/div[1]/div[2]")))
                             except:
-                                temp_dt = browser.find_element_by_class_name('_24i22iNhbLz_Hc8BeXBUwc')
+                                try:
+                                    temp_dt=WebDriverWait(browser, 10, poll_frequency=1).until(EC.presence_of_element_located((By.CSS_SELECTOR,".AL_OM.NAtc2.l8Tnu.I1wdR")))
+                                except:
+                                    try:
+                                        temp_dt = browser.find_element_by_class_name('DWrY3hKxZTZNTwt3mx095')
+                                    except:
+                                        try:
+                                            temp_dt = browser.find_element_by_class_name('_24i22iNhbLz_Hc8BeXBUwc')
+                                        except Exception as e:
+                                            raise e
         time.sleep(4)
         lst_date = temp_dt.text.split()[1].split('/')
         if len(lst_date[0])==1:
@@ -303,53 +314,56 @@ def login_and_download(browser, download_path, x_path_i):
         # #click on doenload
         # WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[10]/div/div/div/div/div/div/ul/li[3]/button/div/span"))).click()
         try:      
-            WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"button.ms-Button--action:nth-child(3) > span:nth-child(1) > span:nth-child(2)"))).click()
+            WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.NAME,"Download all"))).click()
         except:
-            try:
-                WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"button.ms-Button--action:nth-child(3)"))).click()
+            try:      
+                WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"button.ms-Button--action:nth-child(3) > span:nth-child(1) > span:nth-child(2)"))).click()
             except:
                 try:
-                    WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div/div/div[2]/div/span/button[2]/span/span/span"))).click()
+                    WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"button.ms-Button--action:nth-child(3)"))).click()
                 except:
-                    try:                                                                                
-                        WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div[1]/div/div[2]/div/span/button/span/span"))).click()
-                                                                                                                        
+                    try:
+                        WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div/div/div[2]/div/span/button[2]/span/span/span"))).click()
                     except:
-                        try:
-                            WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/span/button"))).click()
+                        try:                                                                                
+                            WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div[1]/div/div[2]/div/span/button/span/span"))).click()
+                                                                                                                            
                         except:
                             try:
-                                WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div[1]/div/div[2]/div/div/div/div/div/div[3]/button/span/i"))).click()
+                                WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/span/button"))).click()
                             except:
                                 try:
-                                    logging.info("downloading single available file")
+                                    WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div[1]/div/div/div[1]/div/div[2]/div/div/div/div/div/div[3]/button/span/i"))).click()
+                                except:
                                     try:
-                                        WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,".O8Uyu"))).click()
-                                    except:
+                                        logging.info("downloading single available file")
                                         try:
-                                            WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,".O8UyuYP6NyglKspIRINh"))).click()
+                                            WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,".O8Uyu"))).click()
                                         except:
-                                            WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div/div[3]/button/span/i"))).click()
-                                    
-                                    time.sleep(5)
-                                    try:
-                                        WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.NAME,"/html/body/div[3]/div[4]/div/div/div/div/div/div/ul/li[3]/button"))).click()
+                                            try:
+                                                WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,".O8UyuYP6NyglKspIRINh"))).click()
+                                            except:
+                                                WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i}]/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div/div[3]/div/div/div/div/div[2]/div/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div/div[3]/button/span/i"))).click()
                                         
-                                    except:
+                                        time.sleep(5)
                                         try:
-                                            WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.NAME,"Download"))).click()
+                                            WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.NAME,"/html/body/div[3]/div[4]/div/div/div/div/div/div/ul/li[3]/button"))).click()
                                             
                                         except:
                                             try:
-                                                WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"li.ms-ContextualMenu-item:nth-child(3) > button:nth-child(1)"))).click()
+                                                WebDriverWait(browser, 30, poll_frequency=1).until(EC.element_to_be_clickable((By.NAME,"Download"))).click()
                                                 
-                                            except Exception as e:
-                                                raise e
-                                        
+                                            except:
+                                                try:
+                                                    WebDriverWait(browser, 10, poll_frequency=1).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"li.ms-ContextualMenu-item:nth-child(3) > button:nth-child(1)"))).click()
+                                                    
+                                                except Exception as e:
+                                                    raise e
+                                            
                                                 # WebDriverWait(browser, 90, poll_frequency=1).until(EC.element_to_be_clickable((By.XPATH,f"/html/body/div[{x_path_i+8}]/div/div/div/div/div/div/ul/li[3]/button/div/span"))).click()
-                                    not_zip = True           
-                                except Exception as e:
-                                    raise e
+                                        not_zip = True           
+                                    except Exception as e:
+                                        raise e
 
             
         download_time = download_wait(download_path)
