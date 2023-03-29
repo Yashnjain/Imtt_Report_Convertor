@@ -13,8 +13,11 @@ for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
 
 temp_download = os.getcwd()+"\\temp_download"
-receiver_email = 'imam.khan@biourja.com,mrutunjaya.sahoo@biourja.com, devina.ligga@biourja.com, arvind.patidar@biourja.com, rini.gohil@biourja.com, amit.bhonsle@biourja.com, priyanshi.jhawar@biourja.com, ayushi.joshi@biourja.com, amit.sharma@biourja.com'
-to_mail_list = ["imam.khan@biourja.com","mrutunjaya.sahoo@biourja.com", "devina.ligga@biourja.com", "arvind.patidar@biourja.com", "rini.gohil@biourja.com", "amit.bhonsle@biourja.com", "priyanshi.jhawar@biourja.com", "ayushi.joshi@biourja.com", "amit.sharma@biourja.com"]
+
+# receiver_email = 'imam.khan@biourja.com, yashn.jain@biourja.com'
+# to_mail_list = ["imam.khan@biourja.com","yashn.jain@biourja.com" ]
+receiver_email = 'imam.khan@biourja.com,yashn.jain@biourja.com,mrutunjaya.sahoo@biourja.com,arvind.patidar@biourja.com,rini.gohil@biourja.com,amit.bhonsle@biourja.com,priyanshi.jhawar@biourja.com,ayushi.joshi@biourja.com,amit.sharma@biourja.com,itdevsupport@biourja.com'
+to_mail_list = ["imam.khan@biourja.com","yashn.jain@biourja.com","mrutunjaya.sahoo@biourja.com","arvind.patidar@biourja.com","rini.gohil@biourja.com","amit.bhonsle@biourja.com","priyanshi.jhawar@biourja.com","ayushi.joshi@biourja.com","amit.sharma@biourja.com"]
 
 
 
@@ -23,7 +26,7 @@ today_date = (date.today()-timedelta(days=0)).strftime("%m-%d-%Y") #Change 1 to 
 # today_date = "11-16-2021"
 data_loc = os.getcwd()+"\\data"
 file_loc = os.getcwd() + "\\forIMTTv2"
-job_name = "IMTT_REPORT_CONVERTER V2"
+job_name = "IMTT_REPORT_CONVERTER_V2"
 # log progress --
 # logfile = 'C:\\AJ\\PowerSignals\\paper_position_report_bnp\\bnp_pdf_Logfile.txt'
 logfile = os.getcwd()+'\\logs\\'+str("imtt_v2_Logfile.txt")+'.txt'
@@ -32,26 +35,22 @@ logging.basicConfig(
     level=logging.INFO, 
     format='%(asctime)s [%(levelname)s] - %(message)s',
     filename=logfile)
-def read_file(filename:str):
-    date_file = open(os.getcwd()+"\\"+filename+".txt")
-    prev_email = date_file.read()
-    date_file.close()
-    return prev_email
+
 
 def pdf_page_breaker():
     try:
         email_df = []
         check = ''
-        latest_file = read_file("imtt_prev")
         #######For manual run###########
         # latest_file = '04-04-2022'
-        latest_file = (" ").join(latest_file.replace(":", " ").replace("/","-").split(" ")[-4:])
+        # latest_file = (" ").join(latest_file.replace(":", " ").replace("/","-").split(" ")[-4:])
         files_list = glob.glob(file_loc + '\\*pdf')
-        logging.info(f"currently forIMTTv2 folder contains {files_list} and latest file is {latest_file}")
+        logging.info(f"currently forIMTTv2 folder contains {files_list}")
+        # and latest file is {latest_file}")
         for file in glob.glob(file_loc + '\\*pdf'):
             file_name = file.split("\\")[-1].replace("imtt","")
             file_name = file_name.replace(".pdf", "")
-            # if file_name == latest_file:
+            # if file_name == latest_file
                 # df = read_pdf(file_loc + '\\' + "imtt"+today_date+".pdf", pages = 'all', guess = False, stream = True ,
                 #             pandas_options={'header':None}, area = ["150,50,566,750"], columns = ["90,140,238,270,330,365,367,417,450,480,520,583,640,740"])
                 # df = read_pdf(file, pages = 'all', guess = False, stream = True ,

@@ -22,11 +22,11 @@ from common import send_email_with_attachment as send_mail
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
 
-temp_download = r"C:\Users\Yashn.jain\Documents\power_automate\imtt_report_converter"+"\\temp_download"
-receiver_email = 'imam.khan@biourja.com, yashn.jain@biourja.com'
-# mrutunjaya.sahoo@biourja.com, devina.ligga@biourja.com, priyanshi.jhawar@biourja.com, ayushi.joshi@biourja.com'
-to_mail_list = ["imam.khan@biourja.com","yashn.jain@biourja.com" ]
-# "mrutunjaya.sahoo@biourja.com", "devina.ligga@biourja.com", "priyanshi.jhawar@biourja.com", "ayushi.joshi@biourja.com","jacob.palacios@biourja.com", "operations@biourja.com"]
+temp_download = os.getcwd()+"\\temp_download"
+# receiver_email = 'imam.khan@biourja.com, yashn.jain@biourja.com'
+# to_mail_list = ["imam.khan@biourja.com","yashn.jain@biourja.com" ]
+receiver_email = 'imam.khan@biourja.com,yashn.jain@biourja.com,mrutunjaya.sahoo@biourja.com,priyanshi.jhawar@biourja.com,ayushi.joshi@biourja.com,itdevsupport@biourja.com'
+to_mail_list = ["imam.khan@biourja.com","yashn.jain@biourja.com","mrutunjaya.sahoo@biourja.com","priyanshi.jhawar@biourja.com","ayushi.joshi@biourja.com","jacob.palacios@biourja.com","operations@biourja.com"]
 
 IST = pytz.timezone('Asia/Kolkata')
 options = Options()
@@ -45,18 +45,6 @@ logging.basicConfig(
     format='%(asctime)s [%(levelname)s] - %(message)s',
     filename=logfile)
 
-
-
-def read_file(filename:str):
-    date_file = open(os.getcwd()+"\\"+filename+".txt")
-    prev_email = date_file.read()
-    date_file.close()
-    return prev_email
-       
-def write_file(filename:str,data:str):
-    date_file = open(os.getcwd()+"\\"+filename+".txt","w")
-    date_file.write(str(data))
-    date_file.close()
 
 def pdf_page_breaker(email_df):
     try:
@@ -111,7 +99,7 @@ def pdf_page_breaker(email_df):
                 m_df.to_excel(data_loc+"\\imtt"+f_name+".xlsx", sheet_name = f_name,index=False)
 
                 email_df.append(data_loc+"\\imtt"+f_name+".xlsx")
-                # shutil.move(temp_download + '\\' +f, file_loc+"\\imtt"+email_date_time+".pdf")
+                shutil.move(temp_download + '\\' +f, file_loc+"\\imtt"+f_name+".pdf")
             else:
                 logging.info(f"removing {f}")
                 os.remove(temp_download + '\\' + f)
@@ -125,87 +113,6 @@ def main():
     try:
     ############Uncomment for test ###############
         email_df = []
-    # email_date = "05-09-2022"
-    # email_df = pdf_page_breaker(email_date,email_df)
-    # browser = None
-    # check = False
-    # try:
-    ##############################################
-    # 
-    # remove files present in temp folder before starting main process
-    # retry = 0
-    # while retry < 2:
-    #     if retry > 0:
-    #             logging.info("Retrying code now")
-       
-    #     try:
-    #         browser = None
-    #         check = False
-    #         to_be_saved = None
-    #         email_df = []
-    #         # raise Exception("test")
-    #         #getting the current email date to set download folder
-    #         logging.info('get the folder name as email date')
-    #         mime_types=['application/pdf'
-    #                         ,'text/plain',
-    #                         'application/vnd.ms-excel',
-    #                         'test/csv',
-    #                         'application/zip',
-    #                         'application/csv',
-    #                         'text/comma-separated-values','application/download','application/octet-stream'
-    #                         ,'binary/octet-stream'
-    #                         ,'application/binary'
-    #                         ,'application/x-unknown']
-                            
-    #         # path=os.getcwd()+'\\'
-    #         # download_path = path
-    #         profile = webdriver.FirefoxProfile()
-    #         profile.set_preference('browser.download.folderList', 2)
-    #         profile.set_preference('browser.download.manager.showWhenStarting', False)
-    #         profile.set_preference('browser.download.dir', temp_download)
-    #         profile.set_preference('pdfjs.disabled', True)
-    #         profile.set_preference('browser.helperApps.neverAsk.saveToDisk', ','.join(mime_types))
-    #         profile.set_preference('browser.helperApps.neverAsk.openFile',','.join(mime_types))
-    #         # browser = webdriver.Firefox(executable_path='C:\\AJ\\PowerSignals\\paper_position_report_bnp\\geckodriver.exe', firefox_profile=profile)
-    #         browser = webdriver.Firefox(executable_path=os.getcwd()+'\\geckodriver.exe', firefox_profile=profile)
-    #         x_path_i = 2
-    #         #getting the current email date to set download folder
-    #         prev_email = read_file("imtt_prev")
-    #         prev_email = datetime.strptime(prev_email, "%m/%d/%Y %I:%M %p")
-    #         logging.info(f"prev_mail date is {prev_email}")
-    #         i=0
-    #         while True:
-    #             try:
-    #                 for f in os.listdir(temp_download):
-    #                     os.remove(os.path.join(temp_download, f))
-    #             except:
-    #                 pass
-    #             email_date, email_date2, x_path_i = get_email_date(browser, i, x_path_i)
-    #             if email_date2 == "5/24/2022 9:02 PM":
-    #                 i+=1
-    #                 continue
-    #             email_date_time = datetime.strptime(email_date2, "%m/%d/%Y %I:%M %p")
-    #             if to_be_saved is None:
-    #                 to_be_saved = email_date2
-    #                 logging.info(f"Email datetime to be saved is {to_be_saved}")
-    #             logging.info(f'Email date is {email_date}')
-    #             # print(f"Email reception date is {email_date}")
-                
-    #             email_date = datetime.strptime(email_date, "%m-%d-%Y")
-    #             date_today = datetime.today() - timedelta(hours=24) #Change 1 to 0 for regular run
-    #             ist_today = date_today.astimezone(IST)
-    #             logging.info(f"current ist datetime is {ist_today}")
-                # ist_today = ist_today.date()
-                # logging.info(f"current ist date is {ist_today}")
-                # date_today = str((datetime.today() - timedelta(days=0)).strftime("%m-%d-%Y")) #Change 1 to 0 for regular run
-                # print(f"Today\'s date is {date_today}")
-                # logging.info(f'Today date is {date_today}')
-                # check = False
-                # logging.info(f"Email reception date is {email_date}")
-                # logging.info(f"Email reception datetime is {email_date2}")
-                # logging.info(f"email_date time is {email_date_time} and prev_email date time is {prev_email}")
-                # ##################For retrial################################
-
         email_df = pdf_page_breaker(email_df)
 
         # logging.info(f"saved latest mail datetime in file as {to_be_saved}")
@@ -234,29 +141,8 @@ def main():
         # if 'Tried to run command without establishing a connection' not in str(e):
         logging.exception(e)
         logging.info('send failure mail')
-        
-        # print(e)
-        
         logging.info(str(e))
-        # try:
-        #     if browser is not None:
-        #         logging.info("quitting browser")
-        #         browser.quit()
-        #         browser = None
-        # except Exception as e:
-        #     # print(e)
-        #     logging.exception(e)
-        #     pass
-        logging.info("retry again")
-        # retry +=1 
-        # if retry != 2:
-        #     time.sleep(60)
-        # if retry == 2:
         log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
-        # if check:
-        #     logging.info("sending file not received failure mail")
-        #     bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB FAILED - {} TILL NOW FILE NOT RECEIVED'.format(job_name),mail_body = '{} failed, Attached logs'.format(job_name),attachment_location = logfile)
-        # else:
         bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB FAILED - {}'.format(job_name),mail_body = '{} failed, Attached logs'.format(job_name),
         attachment_location = logfile)
         
