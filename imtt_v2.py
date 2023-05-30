@@ -1,14 +1,18 @@
-from bu_alerts import send_mail
-from datetime import datetime, timedelta
-from datetime import date
+import os
+import time
+import glob
+import shutil
+import logging
+import bu_alerts
 import numpy as np
 import pandas as pd
-import glob, sys, os, time, logging
-import bu_alerts
-from zipfile import ZipFile
+from datetime import date
 from tabula import read_pdf
-import shutil
+from bu_config import config
+from bu_alerts import send_mail
+from datetime import datetime, timedelta
 from common import send_email_with_attachment as send_mail
+
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
 
@@ -17,7 +21,7 @@ temp_download = os.getcwd()+"\\temp_download"
 # receiver_email = 'imam.khan@biourja.com, yashn.jain@biourja.com'
 # to_mail_list = ["imam.khan@biourja.com","yashn.jain@biourja.com" ]
 receiver_email = 'imam.khan@biourja.com,yashn.jain@biourja.com,mrutunjaya.sahoo@biourja.com,arvind.patidar@biourja.com,rini.gohil@biourja.com,amit.bhonsle@biourja.com,priyanshi.jhawar@biourja.com,ayushi.joshi@biourja.com,amit.sharma@biourja.com,itdevsupport@biourja.com'
-to_mail_list = ["imam.khan@biourja.com","yashn.jain@biourja.com","mrutunjaya.sahoo@biourja.com","arvind.patidar@biourja.com","rini.gohil@biourja.com","amit.bhonsle@biourja.com","priyanshi.jhawar@biourja.com","ayushi.joshi@biourja.com","amit.sharma@biourja.com"]
+# to_mail_list = ["imam.khan@biourja.com","yashn.jain@biourja.com","mrutunjaya.sahoo@biourja.com","arvind.patidar@biourja.com","rini.gohil@biourja.com","amit.bhonsle@biourja.com","priyanshi.jhawar@biourja.com","ayushi.joshi@biourja.com","amit.sharma@biourja.com"]
 
 
 
@@ -118,38 +122,60 @@ def pdf_page_breaker():
             
         return email_df, check
     except Exception as e:
+        print(f"Exception caught in pdf_page_breaker {e}")
         logging.info(f"Exception caught in pdf_page_breaker {e}")
         raise e
 
-def main():
+
+
+
+def imtt_runner():
     try:
-    ############Uncomment for test ###############
-        # email_date = "10-08-2021"
-        # email_df = pdf_page_breaker(email_date)
-        ##############################################
+        time_start = time.time()
+        logfile = os.getcwd() + '\\logs\\'+'IMTT_Logfile'+'.txt'
+        logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s [%(levelname)s] - %(message)s',
+        filename=logfile)
+        logging.warning('Start work at {} ...'.format(time_start))
+        logging.warning('Execution started')
+        rows=0
+        job_id = np.random.randint(1000000,9999999)
+        credential_dict = config.get_config('IMTT Report', 'N',other_vert= True)
+        database = credential_dict['DATABASE'].split(";")[0]
+        warehouse=credential_dict['DATABASE'].split(";")[1]
+        tablename = credential_dict['TABLE_NAME']
+        jobname = credential_dict['PROJECT_NAME']
+        owner = credential_dict['IT_OWNER']
+        receiveremail = credential_dict['EMAIL_LIST'].split(";")[0]
+        log_json = '[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
+        bu_alerts.bulog(process_name=jobname, database=database,status='STARTED',row_count=rows,tablename = tablename,log=log_json,
+        warehouse=warehouse,process_owner=owner)
+        logging.info("Entered in pdf_page_breaker")
+
+
+
         email_df, check = pdf_page_breaker()
         if len(email_df)>0:
             logging.info("Sending mail now")
-            send_mail(email_df, subject='JOB SUCCESS - {} {} {}'.format(job_name, today_date, check), body='{} completed successfully, Attached invoice file'.format(job_name), to_mail_list=to_mail_list)
-                
+            log_json = '[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
+            bu_alerts.bulog(process_name=jobname,database=database,status='COMPLETED',row_count=1,table_name=tablename,log=log_json,
+            warehouse=warehouse,process_owner=owner)
+            bu_alerts.send_mail(email_df, subject='JOB SUCCESS - {} {} {}'.format(job_name, today_date, check), body='{} completed successfully, Attached invoice file'.format(job_name), receiver_email=receiveremail)
         else:
             logging.info('No new file found')
-            # bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB SUCCESS - {} No file found'.format(job_name),mail_body = '{} completed successfully, Attached logs'.format(job_name),attachment_location = logfile)
     except Exception as e:
         logging.exception(e)
-        logging.info("Sending mail now")
-        bu_alerts.send_mail(receiver_email = receiver_email,mail_subject ='JOB FAILED - {}'.format(job_name),mail_body = '{} failed, Attached logs'.format(job_name),attachment_location = logfile)
+        logging.info("Sending Failure mail now")
+        log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.datetime.now())+'"}]'
+        bu_alerts.bulog(process_name=jobname, database=database,status='FAILED',table_name = tablename, row_count=0, log=log_json, warehouse=warehouse,process_owner=owner)
+        bu_alerts.send_mail(receiver_email = receiveremail,mail_subject ='JOB FAILED - {}'.format(job_name),mail_body = '{} failed, Attached logs'.format(job_name),attachment_location = logfile)
+
+    time_end = time.time()
+    logging.warning('It took {} seconds to run.'.format(time_end - time_start))
+    print('It took {} seconds to run.'.format(time_end - time_start))
 
 
 
 if __name__ == "__main__":
-    logging.info('Execution Started')
-    rows=0
-    time_start = time.time()
-    logging.warning('Start work at {} ...'.format(time_start))
-    log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
-    
-    main()
-    time_end = time.time()
-    logging.warning('It took {} seconds to run.'.format(time_end - time_start))
-    print('It took {} seconds to run.'.format(time_end - time_start))
+    imtt_runner()
