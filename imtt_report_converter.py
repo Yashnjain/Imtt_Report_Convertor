@@ -11,7 +11,7 @@ from datetime import date
 from tabula import read_pdf
 from bu_config import config
 from datetime import datetime
-from common import send_email_with_attachment as send_mail
+
 
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
@@ -79,7 +79,7 @@ def main():
             logging.info('send success e-mail')
             mail_subject = 'JOB SUCCESS - {} No file found'.format(jobname)
             mail_body = '{} completed successfully, Attached logs'.format(jobname)
-        return True,mail_body,mail_subject
+        return mail_body,mail_subject,email_df
     except Exception as e:
         print("Error in main method: ",str(e))
         logging.info("Error in main method: {}".format(str(e)))
@@ -88,7 +88,7 @@ def main():
 def imtt_report_runner():
      try:
         time_start = time.time()
-        global today,data_loc,file_loc,job_id,jobname,temp_download
+        global logfile,today,temp_download,data_loc,file_loc,job_id,jobname
         logfile = os.getcwd()+'\\logs\\'+'imtt_report.txt'
         logging.basicConfig(level=logging.INFO,
             force=True,
@@ -97,7 +97,6 @@ def imtt_report_runner():
         logging.warning('Start work at {} ...'.format(time_start))
         logging.warning('Execution started')
         today = date.today()
-        job_id=np.random.randint(1000000,9999999)
         temp_download = os.getcwd()+"\\temp_download"
         data_loc = os.getcwd()+"\\data"
         file_loc = os.getcwd() + "\\forIMTTv2"
@@ -107,17 +106,26 @@ def imtt_report_runner():
         tablename = credential_dict['TABLE_NAME']
         jobname = credential_dict['PROJECT_NAME']
         owner = credential_dict['IT_OWNER']
+        job_id=np.random.randint(1000000,9999999)
         receiveremail = credential_dict['EMAIL_LIST'].split(";")[0]
+        
+        ################# testing environment ############
+        warehouse = "BUIT_WH"
+        databse = "BUITDB_DEV"
+        receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com"
+
+        ###############################################3
+
         log_json = '[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
-        bu_alerts.bulog(process_name=jobname, database=database,status='STARTED',tablename = tablename,log=log_json,
+        bu_alerts.bulog(process_name=jobname, database=database,status='STARTED',table_name = tablename,log=log_json,
         warehouse=warehouse,process_owner=owner)
         logging.info("Entered in main")
-        condition,mail_subject,mail_body = main()
+        mail_subject,mail_body,email_df = main()
         logging.info("Sending success mail")
         log_json = '[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
         bu_alerts.bulog(process_name=jobname, database=database,status='COMPLETED',table_name = tablename,log=log_json, warehouse=warehouse,process_owner=owner)
-        send_mail(receiver_email = receiveremail,mail_subject =mail_subject,mail_body = mail_body,
-        attachment_location = logfile)
+        bu_alerts.send_mail(receiver_email = receiveremail,mail_subject =mail_subject,mail_body = mail_body,
+        multiple_attachment_list= email_df)
      except Exception as e:
         logging.exception(e)
         log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.datetime.now())+'"}]'
@@ -129,6 +137,6 @@ def imtt_report_runner():
 
 
 if __name__ == "__main__":
-    main()
+    imtt_report_runner()
     
     

@@ -10,7 +10,7 @@ from datetime import date
 from tabula import read_pdf
 from bu_config import config
 from datetime import datetime, timedelta
-from common import send_email_with_attachment as send_mail
+
 
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
@@ -80,6 +80,7 @@ def imtt_runner():
         file_loc = os.getcwd() + "\\forIMTTv2"
         data_loc = os.getcwd()+"\\data"
         today_date = (date.today()-timedelta(days=0)).strftime("%m-%d-%Y")
+        logfile = os.getcwd()+'\\logs\\'+str("imtt_v2_Logfile.txt")+'.txt'
         logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s [%(levelname)s] - %(message)s',
@@ -96,8 +97,15 @@ def imtt_runner():
         owner = credential_dict['IT_OWNER']
         receiveremail = credential_dict['EMAIL_LIST'].split(";")[0]
         to_mail_list = credential_dict['EMAIL_LIST'].split(';')[-1]
+        
+        #testing environment
+        warehouse = "BUIT_WH"
+        databse = "BUITDB_DEV"
+        receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com"
+        #############################
+
         log_json = '[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
-        bu_alerts.bulog(process_name=jobname, database=database,status='STARTED',row_count=rows,tablename = tablename,log=log_json,
+        bu_alerts.bulog(process_name=jobname, database=database,status='STARTED',row_count=rows,table_name = tablename,log=log_json,
         warehouse=warehouse,process_owner=owner)
         logging.info("Entered in pdf_page_breaker")
 
@@ -107,9 +115,14 @@ def imtt_runner():
             log_json = '[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
             bu_alerts.bulog(process_name=jobname,database=database,status='COMPLETED',row_count=1,table_name=tablename,log=log_json,
             warehouse=warehouse,process_owner=owner)
-            send_mail(email_df, subject='JOB SUCCESS - {} {} {}'.format(jobname, today_date, check), body='{} completed successfully, Attached invoice file'.format(jobname), to_mail_list=to_mail_list)
+            bu_alerts.send_mail(receiver_email = receiveremail, mail_subject='JOB SUCCESS - {} {} {}'.format(jobname, today_date, check),
+                                 mail_body='{} completed successfully, Attached invoice file'.format(jobname),multiple_attachment_list= email_df)
         else:
             logging.info('No new file found')
+            mail_subject = 'JOB SUCCESS - {} No file found'.format(jobname)
+            mail_body = '{} completed successfully, Attached logs'.format(jobname)
+            bu_alerts.send_mail(receiver_email = receiveremail,mail_subject =mail_subject,mail_body = mail_body,
+                attachment_location= logfile)
     except Exception as e:
         logging.exception(e)
         logging.info("Sending Failure mail now")
