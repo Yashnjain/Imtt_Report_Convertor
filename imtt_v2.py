@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import glob
 import shutil
@@ -129,10 +130,11 @@ def imtt_runner():
         log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.datetime.now())+'"}]'
         bu_alerts.bulog(process_name=jobname, database=database,status='FAILED',table_name = tablename, row_count=0, log=log_json, warehouse=warehouse,process_owner=owner)
         bu_alerts.send_mail(receiver_email = receiveremail,mail_subject ='JOB FAILED - {}'.format(jobname),mail_body = '{} failed, Attached logs'.format(jobname),attachment_location = logfile)
-
-    time_end = time.time()
-    logging.warning('It took {} seconds to run.'.format(time_end - time_start))
-    print('It took {} seconds to run.'.format(time_end - time_start))
+        sys.exit(-1)
+    finally:
+        time_end = time.time()
+        logging.warning('It took {} seconds to run.'.format(time_end - time_start))
+        print('It took {} seconds to run.'.format(time_end - time_start))
 
 
 if __name__ == "__main__":

@@ -86,7 +86,7 @@ def main():
         logging.exception(e)
          
 def imtt_report_runner():
-     try:
+    try:
         time_start = time.time()
         global logfile,today,temp_download,data_loc,file_loc,job_id,jobname
         logfile = os.getcwd()+'\\logs\\'+'imtt_report.txt'
@@ -126,14 +126,16 @@ def imtt_report_runner():
         bu_alerts.bulog(process_name=jobname, database=database,status='COMPLETED',table_name = tablename,log=log_json, warehouse=warehouse,process_owner=owner)
         bu_alerts.send_mail(receiver_email = receiveremail,mail_subject =mail_subject,mail_body = mail_body,
         multiple_attachment_list= email_df)
-     except Exception as e:
+    except Exception as e:
         logging.exception(e)
         log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.datetime.now())+'"}]'
         bu_alerts.bulog(process_name=jobname, database=database,status='FAILED',table_name = tablename, log=log_json, warehouse=warehouse,process_owner=owner)
         bu_alerts.send_mail(receiver_email = receiveremail,mail_subject =f'JOB FAILED - {jobname}',mail_body = f'{jobname} failed, Attached logs',attachment_location = logfile)
-     time_end = time.time()
-     logging.warning('It took {} seconds to run.'.format(time_end - time_start))
-     print('It took {} seconds to run.'.format(time_end - time_start))
+        sys.exit(-1)
+    finally:
+        time_end = time.time()
+        logging.warning('It took {} seconds to run.'.format(time_end - time_start))
+        print('It took {} seconds to run.'.format(time_end - time_start))
 
 
 if __name__ == "__main__":
