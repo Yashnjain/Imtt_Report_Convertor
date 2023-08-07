@@ -77,7 +77,7 @@ def imtt_runner():
     try:
         time_start = time.time()
         global jobname,file_loc,data_loc,today_date
-        logfile = os.getcwd() + '\\logs\\'+'IMTT_Logfile'+'.txt'
+        logfile = os.getcwd() + '\\logs\\'+'IMTT_V2_Logfile'+'.txt'
         file_loc = os.getcwd() + "\\forIMTTv2"
         data_loc = os.getcwd()+"\\data"
         today_date = (date.today()-timedelta(days=0)).strftime("%m-%d-%Y")
