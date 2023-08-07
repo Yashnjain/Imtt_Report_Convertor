@@ -97,12 +97,13 @@ def imtt_runner():
         jobname = credential_dict['PROJECT_NAME']
         owner = credential_dict['IT_OWNER']
         receiveremail = credential_dict['EMAIL_LIST'].split(";")[0]
-        to_mail_list = credential_dict['EMAIL_LIST'].split(';')[-1]
         
         #testing environment
         warehouse = "BUIT_WH"
-        databse = "BUITDB_DEV"
+        jobname = "BIO-PAD01 IMTT_V2"
+        database = "BUITDB_DEV"
         receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com"
+        jobname = "BIO-PAD1_" + jobname
         #############################
 
         log_json = '[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'

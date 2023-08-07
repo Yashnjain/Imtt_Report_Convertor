@@ -111,9 +111,10 @@ def imtt_report_runner():
         
         ################# testing environment ############
         warehouse = "BUIT_WH"
-        databse = "BUITDB_DEV"
+        jobname = "BIO-PAD01 IMTT_REPORT_CONVERTER"
+        database = "BUITDB_DEV"
         receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com"
-
+        jobname = "BIO-PAD1_" + jobname
         ###############################################3
 
         log_json = '[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
