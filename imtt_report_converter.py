@@ -100,7 +100,7 @@ def imtt_report_runner():
         temp_download = os.getcwd()+"\\temp_download"
         data_loc = os.getcwd()+"\\data"
         file_loc = os.getcwd() + "\\forIMTTv2"
-        credential_dict = config.get_config('IMTT Report', 'N',other_vert= True)
+        credential_dict = config.get_config('IMTT_REPORT_CONVERTER', 'N',other_vert= True)
         database = credential_dict['DATABASE'].split(";")[0]
         warehouse=credential_dict['DATABASE'].split(";")[1]
         tablename = credential_dict['TABLE_NAME']
@@ -111,9 +111,9 @@ def imtt_report_runner():
         
         ################# testing environment ############
         warehouse = "BUIT_WH"
-        jobname = "BIO-PAD01 IMTT_REPORT_CONVERTER"
+        # jobname = "BIO-PAD01 IMTT_REPORT_CONVERTER"
         database = "BUITDB_DEV"
-        receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com"
+        receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com,yash.gupta@biourja.com,bhavana.kaurav@biourja.com"
         jobname = "BIO-PAD1_" + jobname
         ###############################################3
 

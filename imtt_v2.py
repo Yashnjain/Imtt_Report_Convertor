@@ -90,17 +90,17 @@ def imtt_runner():
         logging.warning('Execution started')
         rows=0
         job_id = np.random.randint(1000000,9999999)
-        credential_dict = config.get_config('IMTT Report', 'N',other_vert= True)
+        credential_dict = config.get_config('IMTT_V2', 'N',other_vert= True)
         database = credential_dict['DATABASE'].split(";")[0]
         warehouse=credential_dict['DATABASE'].split(";")[1]
         tablename = credential_dict['TABLE_NAME']
         jobname = credential_dict['PROJECT_NAME']
         owner = credential_dict['IT_OWNER']
-        receiveremail = credential_dict['EMAIL_LIST'].split(";")[0]
+        receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com,yash.gupta@biourja.com,bhavana.kaurav@biourja.com"
         
         #testing environment
         warehouse = "BUIT_WH"
-        jobname = "BIO-PAD01 IMTT_V2"
+        # jobname = "BIO-PAD01 IMTT_V2"
         database = "BUITDB_DEV"
         receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com"
         jobname = "BIO-PAD1_" + jobname
