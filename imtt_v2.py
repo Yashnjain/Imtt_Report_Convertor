@@ -99,10 +99,10 @@ def imtt_runner():
         receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com,yash.gupta@biourja.com,bhavana.kaurav@biourja.com"
         
         #testing environment
-        warehouse = "BUIT_WH"
+        # warehouse = "BUIT_WH"
         # jobname = "BIO-PAD01 IMTT_V2"
-        database = "BUITDB_DEV"
-        receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com"
+        # database = "BUITDB_DEV"
+        # receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com"
         jobname = "BIO-PAD1_" + jobname
         #############################
 
