@@ -129,7 +129,7 @@ def imtt_report_runner():
         multiple_attachment_list= email_df)
     except Exception as e:
         logging.exception(e)
-        log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.datetime.now())+'"}]'
+        log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
         bu_alerts.bulog(process_name=jobname, database=database,status='FAILED',table_name = tablename, log=log_json, warehouse=warehouse,process_owner=owner)
         bu_alerts.send_mail(receiver_email = receiveremail,mail_subject =f'JOB FAILED - {jobname}',mail_body = f'{jobname} failed, Attached logs',attachment_location = logfile)
         sys.exit(-1)

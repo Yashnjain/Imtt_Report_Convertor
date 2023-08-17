@@ -128,7 +128,7 @@ def imtt_runner():
     except Exception as e:
         logging.exception(e)
         logging.info("Sending Failure mail now")
-        log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.datetime.now())+'"}]'
+        log_json='[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
         bu_alerts.bulog(process_name=jobname, database=database,status='FAILED',table_name = tablename, row_count=0, log=log_json, warehouse=warehouse,process_owner=owner)
         bu_alerts.send_mail(receiver_email = receiveremail,mail_subject ='JOB FAILED - {}'.format(jobname),mail_body = '{} failed, Attached logs'.format(jobname),attachment_location = logfile)
         sys.exit(-1)
