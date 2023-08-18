@@ -96,7 +96,7 @@ def imtt_runner():
         tablename = credential_dict['TABLE_NAME']
         jobname = credential_dict['PROJECT_NAME']
         owner = credential_dict['IT_OWNER']
-        receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com,yash.gupta@biourja.com,bhavana.kaurav@biourja.com"
+        receiveremail = credential_dict['EMAIL_LIST']
         
         #testing environment
         # warehouse = "BUIT_WH"

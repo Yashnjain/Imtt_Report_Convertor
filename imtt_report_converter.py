@@ -107,7 +107,7 @@ def imtt_report_runner():
         jobname = credential_dict['PROJECT_NAME']
         owner = credential_dict['IT_OWNER']
         job_id=np.random.randint(1000000,9999999)
-        receiveremail = credential_dict['EMAIL_LIST'].split(";")[0]
+        receiveremail = credential_dict['EMAIL_LIST']
         
         ################# testing environment ############
         # warehouse = "BUIT_WH"
