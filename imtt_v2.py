@@ -103,7 +103,7 @@ def imtt_runner():
         # jobname = "BIO-PAD01 IMTT_V2"
         # database = "BUITDB_DEV"
         # receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com"
-        jobname = "BIO-PAD1_" + jobname
+        jobname = "BIO-PAD01_" + jobname
         #############################
 
         log_json = '[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
