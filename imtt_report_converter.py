@@ -121,7 +121,7 @@ def imtt_report_runner():
         bu_alerts.bulog(process_name=jobname, database=database,status='STARTED',table_name = tablename,log=log_json,
         warehouse=warehouse,process_owner=owner)
         logging.info("Entered in main")
-        mail_subject,mail_body,email_df = main()
+        mail_body,mail_subject,email_df = main()
         logging.info("Sending success mail")
         log_json = '[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
         bu_alerts.bulog(process_name=jobname, database=database,status='COMPLETED',table_name = tablename,log=log_json, warehouse=warehouse,process_owner=owner)
