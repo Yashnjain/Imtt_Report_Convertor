@@ -114,7 +114,7 @@ def imtt_report_runner():
         # jobname = "BIO-PAD01 IMTT_REPORT_CONVERTER"
         # database = "BUITDB_DEV"
         # receiveremail = "yashn.jain@biourja.com,imam.khan@biourja.com,yash.gupta@biourja.com,bhavana.kaurav@biourja.com"
-        jobname = "BIO-PAD1_" + jobname
+        jobname = "BIO-PAD01_" + jobname
         ###############################################3
 
         log_json = '[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
