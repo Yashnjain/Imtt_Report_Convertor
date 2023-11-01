@@ -65,6 +65,7 @@ def pdf_page_breaker():
             m_df.to_excel(data_loc+"\\imtt_v2_"+file_name+".xlsx", sheet_name = today_date,index=False)
             email_df.append(data_loc+"\\imtt_v2_"+file_name+".xlsx")
             logging.info(f"currently email_df is {email_df}")
+            shutil.copy(data_loc+"\\imtt_v2_"+file_name+".xlsx", save_dir+"\\imtt_v2_"+file_name+".xlsx")
             shutil.move(file, data_loc+"\\"+file.split("\\")[-1])
         return email_df, check
     except Exception as e:
@@ -76,11 +77,13 @@ def pdf_page_breaker():
 def imtt_runner():
     try:
         time_start = time.time()
-        global jobname,file_loc,data_loc,today_date
+        global jobname,file_loc,data_loc,today_date,save_dir
         logfile = os.getcwd() + '\\logs\\'+'IMTT_V2_Logfile'+'.txt'
         file_loc = os.getcwd() + "\\forIMTTv2"
         data_loc = os.getcwd()+"\\data"
         today_date = (date.today()-timedelta(days=0)).strftime("%m-%d-%Y")
+        for handler in logging.root.handlers[:]:
+            logging.root.removeHandler(handler)
         logfile = os.getcwd()+'\\logs\\'+str("imtt_v2_Logfile.txt")+'.txt'
         logging.basicConfig(
         level=logging.INFO,
@@ -97,6 +100,7 @@ def imtt_runner():
         jobname = credential_dict['PROJECT_NAME']
         owner = credential_dict['IT_OWNER']
         receiveremail = credential_dict['EMAIL_LIST']
+        root_loc = credential_dict['API_KEY']
         
         #testing environment
         # warehouse = "BUIT_WH"
@@ -106,12 +110,16 @@ def imtt_runner():
         jobname = "BIO-PAD01_" + jobname
         #############################
 
+        d_year = date.today().strftime("%Y")
+        save_dir = root_loc + str(d_year) + "\\Montgomery"
+
         log_json = '[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
         bu_alerts.bulog(process_name=jobname, database=database,status='STARTED',row_count=rows,table_name = tablename,log=log_json,
         warehouse=warehouse,process_owner=owner)
         logging.info("Entered in pdf_page_breaker")
 
         email_df, check = pdf_page_breaker()
+        print("DONE")
         if len(email_df)>0:
             logging.info("Sending mail now")
             log_json = '[{"JOB_ID": "'+str(job_id)+'","CURRENT_DATETIME": "'+str(datetime.now())+'"}]'
